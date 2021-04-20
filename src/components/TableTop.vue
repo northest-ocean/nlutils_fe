@@ -7,77 +7,19 @@
       @sort-change="changeTableSort"
       :default-sort="{ prop: 'date', order: 'ascending' }"
     >
-      <!-- <el-table-column
-        label="时间"
-        type="index"
-        header-align="left"
-        align="left"
-      >
-      </el-table-column> -->
-      <div  v-for="(col, index) in columns" :key="index">
+      <template  v-for="(col, idx) in columns">
         <el-table-column
+          :key="idx"
           :prop="col.prop"
           :label="col.label"
-          header-align="left"
-          align="left"
+          header-align="center"
+          align="center"
           :show-overflow-tooltip="true"
+           width="120"
           :sortable="'custom'"
         >
         </el-table-column>
-      </div>
-      <!-- <el-table-column
-        prop="time"
-        label="Time"
-        header-align="left"
-        align="left"
-        :show-overflow-tooltip="true"
-      >
-      </el-table-column>
-      <el-table-column
-        prop="name"
-        label="Name"
-        header-align="left"
-        align="left"
-        sortable
-        :show-overflow-tooltip="true"
-      >
-        <template slot-scope="scope">
-          {{ scope.row.amount | formatNum }}
-        </template>
-      </el-table-column>
-      <el-table-column
-        prop="epoch"
-        label="epoch"
-        header-align="left"
-        align="left"
-        :sortable="'custom'"
-        :show-overflow-tooltip="true"
-      >
-      </el-table-column>
-      <el-table-column
-        prop="m_num"
-        label="购买人数"
-        header-align="left"
-        align="left"
-        :sortable="'custom'"
-        :show-overflow-tooltip="true"
-      >
-        <template slot-scope="scope">
-          {{ scope.row.m_num | formatNum }}
-        </template>
-      </el-table-column>
-      <el-table-column
-        prop="o_num"
-        label="订单数"
-        header-align="left"
-        align="left"
-        :sortable="'custom'"
-        :show-overflow-tooltip="true"
-      > -->
-        <!-- <template slot-scope="scope">
-          {{ scope.row.o_num | formatNum }}
-        </template>
-      </el-table-column> -->
+      </template>
     </el-table>
   </div>
 </template>
@@ -132,15 +74,50 @@ export default {
   },
     mounted() {
       // this.getDeviceTypes();
-      var url = "./x.json";/*json文件url，本地的就写本地的位置，如果是服务器的就写服务器的路径*/
-      fetch(url)
-        .then(function(response) {
-          console.log(response);
-          return response.json();
-        })
-        .then(function(myJson) {
-          console.log(myJson);
-        });
+      let url = "http://localhost:8000/params";
+      let request = new XMLHttpRequest();
+      let _this = this;
+      request.onreadystatechange = function() {
+        if (request.readyState == 4) {
+          let pobj = JSON.parse(request.responseText);
+          let parameters = Object.keys(pobj.data[0]['parameters']);
+          parameters = parameters.filter(val => {
+            // console.log(val);
+            return ['epoch', 'induc_epoch', 'user_degree_threshold', 'item_degree_threshold', 'learning_rate', 'temp', 'network'].indexOf(val) !== -1;
+          });
+          let results = Object.keys(pobj.data[0]['results']);
+          results = [...parameters, ...results];
+          _this.columns = results.map(val => {
+            return {prop: val, label: val.substring(0, 11)};
+          });
+          let tmpTableData = [];
+          for(let i=0;i<pobj.data.length;i++) {
+            let tmp = pobj.data[i]['results'];
+            tmp = Object.assign(tmp, pobj.data[i]['parameters']);
+            for(let i=0;i<Object.keys(tmp).length;i++) {
+              let key = Object.keys(tmp)[i];
+              if (typeof tmp[key] === "number") {
+                if(key === 'learning_rate')
+                  tmp[key] = tmp[key].toFixed(4);
+                else if(key.includes('epoch') || key.includes('degree') || key.includes('num'))
+                  tmp[key] = tmp[key].toFixed(0);
+                else if(key.includes('temp'))
+                  tmp[key] = tmp[key].toFixed(1);
+                else
+                  tmp[key] = tmp[key].toFixed(3);
+              }
+            }
+            tmpTableData.push(tmp);
+          }
+          // console.log(tmpTableData);
+          _this.tableData = tmpTableData;
+        }
+      }
+      request.open("POST", url, true);
+      let data = {
+        name:"HybrdModel-induc-user-item"
+      }
+      request.send(JSON.stringify(data));
   },
 
   methods: {
