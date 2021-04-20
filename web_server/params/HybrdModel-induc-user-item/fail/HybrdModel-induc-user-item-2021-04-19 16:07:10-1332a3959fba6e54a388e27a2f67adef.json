@@ -1,0 +1,162 @@
+{
+    "name": "HybrdModel-induc-user-item",
+    "description": "This nodue ",
+    "parameters": {
+        "datadir": "../data",
+        "datapath": "../data/lastfm.csv",
+        "device": "cpu",
+        "dyn_feature_dump_mrr": null,
+        "dyn_model_dump_mrr": null,
+        "epoch": 50,
+        "epochs": 50,
+        "f_dim": 64,
+        "feature_dump_mrr": "saved_models/lastfm/dd-64-64-64-lr-1e-4-ep-50-temp-1.0-best_feature_mrr.dump",
+        "feature_dump_recall": null,
+        "gpu": 0,
+        "i_dim": 64,
+        "i_temp_model_type": "gru",
+        "induc_epoch": 1,
+        "induc_feature_dump_mrr": null,
+        "induc_feature_dump_recall": null,
+        "induc_i_init_type": "random",
+        "induc_model_dump_mrr": "saved_models/lastfm/gru-u-100-i-150-ep-1-temp-1.0-lr-1e-4-time-300-best_induc_mrr.dump",
+        "induc_model_dump_recall": null,
+        "induc_u_init_type": "common",
+        "inductive_init_type": "common",
+        "init_gru_as_identity": true,
+        "item_degree_threshold": 150,
+        "learning_rate": 0.0001,
+        "loss_type": "ce",
+        "model": "jodie",
+        "neg_samples": null,
+        "neg_samples_test": 499,
+        "neg_samples_train": 10,
+        "neg_samples_vali": 30,
+        "network": "lastfm",
+        "num_adapt_for_act_u": -1,
+        "num_time_windows": 300,
+        "phase": "train",
+        "pool_type": "sum",
+        "pre_item": true,
+        "result_filename": null,
+        "save_dir": "saved_models/lastfm",
+        "seed": 10086,
+        "selection_metric": "mrr",
+        "share_final": false,
+        "tbatch_split_dump": "saved_models/lastfm/u-100-i-150",
+        "temp": 1.0,
+        "test_num_time_windows": null,
+        "train_proportion": 0.7,
+        "trans_batch_size": 100000,
+        "trans_epoch": 100,
+        "trans_model_dump_mrr": "saved_models/lastfm/dd-64-64-64-lr-1e-4-ep-50-temp-1.0-best_trans_mrr.dump",
+        "trans_model_dump_recall": null,
+        "trans_user_model_dump_mrr": null,
+        "u_dim": 64,
+        "u_temp_model_type": "gru",
+        "user_degree_threshold": 100,
+        "vali_num_time_windows": 300
+    },
+    "model_parameters": {},
+    "training_parameters": {},
+    "data_parameters": {},
+    "miscellaneous_parameters": {},
+    "models": {
+        "hybrid_induc": [
+            [
+                0,
+                "HybridModel("
+            ],
+            [
+                2,
+                "(trans_module): TransEmbedding("
+            ],
+            [
+                4,
+                "(_embedding_para): ParameterList("
+            ],
+            [
+                8,
+                "(0): Parameter containing: [torch.cuda.FloatTensor of size 626x64 (GPU 0)]"
+            ],
+            [
+                8,
+                "(1): Parameter containing: [torch.cuda.FloatTensor of size 962x64 (GPU 0)]"
+            ],
+            [
+                4,
+                ")"
+            ],
+            [
+                2,
+                ")"
+            ],
+            [
+                2,
+                "(induc_user_mdoel): TemporalModel("
+            ],
+            [
+                4,
+                "(sequence_model): GRUCell(129, 64)"
+            ],
+            [
+                2,
+                ")"
+            ],
+            [
+                2,
+                "(induc_item_model): TemporalModel("
+            ],
+            [
+                4,
+                "(sequence_model): GRUCell(65, 64)"
+            ],
+            [
+                2,
+                ")"
+            ],
+            [
+                2,
+                "(prediction_layer): PredictionLayer("
+            ],
+            [
+                4,
+                "(prediction): Linear(in_features=192, out_features=128, bias=True)"
+            ],
+            [
+                2,
+                ")"
+            ],
+            [
+                2,
+                "(prediction_layer2): PredictionLayer("
+            ],
+            [
+                4,
+                "(prediction): Linear(in_features=192, out_features=128, bias=True)"
+            ],
+            [
+                2,
+                ")"
+            ],
+            [
+                0,
+                ")"
+            ]
+        ]
+    },
+    "results": {
+        "mrr": 0.1936054575146621,
+        "rec10": 0.3888965809491443,
+        "trans_mrr": 0.20189059389884248,
+        "trans_rec10": 0.3986306650268911,
+        "induc_mrr": 0.17552768015669334,
+        "induc_rec10": 0.36765726796966786,
+        "num_trans": 163437,
+        "num_induc": 74904
+    },
+    "time": "2021-04-19 16:07:10",
+    "end_time_stamp": 1618819751.3146644,
+    "id": "1332a3959fba6e54a388e27a2f67adef",
+    "hash_code": "d66e082d14007a12bc7bee314a4ea506"
+}
