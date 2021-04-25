@@ -3351,6 +3351,14 @@
     "jsbn" "~0.1.0"
     "safer-buffer" "^2.1.0"
 
+"echarts@^5.1.0":
+  "integrity" "sha1-dozFhaoJJWD0jwGy1S3kk67s0rA="
+  "resolved" "https://registry.npm.taobao.org/echarts/download/echarts-5.1.0.tgz"
+  "version" "5.1.0"
+  dependencies:
+    "tslib" "2.0.3"
+    "zrender" "5.1.0"
+
 "ee-first@1.1.1":
   "integrity" "sha1-WQxhFWsK4vTwJVcyoViyZrxWsh0="
   "resolved" "https://registry.npm.taobao.org/ee-first/download/ee-first-1.1.1.tgz"
@@ -8145,6 +8153,11 @@
   "resolved" "https://registry.npm.taobao.org/tslib/download/tslib-1.14.1.tgz"
   "version" "1.14.1"
 
+"tslib@2.0.3":
+  "integrity" "sha1-jgdBrEX8DCJuWKF7/D5kubxsphw="
+  "resolved" "https://registry.nlark.com/tslib/download/tslib-2.0.3.tgz?cache=0&sync_timestamp=1618847132149&other_urls=https%3A%2F%2Fregistry.nlark.com%2Ftslib%2Fdownload%2Ftslib-2.0.3.tgz"
+  "version" "2.0.3"
+
 "tty-browserify@0.0.0":
   "integrity" "sha1-oVe6QC2iTpv5V/mqadUk7tQpAaY="
   "resolved" "https://registry.npm.taobao.org/tty-browserify/download/tty-browserify-0.0.0.tgz"
@@ -8855,3 +8868,10 @@
     "is-ci" "^1.0.10"
     "normalize-path" "^1.0.0"
     "strip-indent" "^2.0.0"
+
+"zrender@5.1.0":
+  "integrity" "sha1-tqhMOqfMxmQu4FGZAcpMCDXE2F4="
+  "resolved" "https://registry.npm.taobao.org/zrender/download/zrender-5.1.0.tgz"
+  "version" "5.1.0"
+  dependencies:
+    "tslib" "2.0.3"

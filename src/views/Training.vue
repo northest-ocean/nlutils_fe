@@ -1,15 +1,13 @@
 <template>
   <div>
-      <h1>This is Training Page.</h1>
+    <h1>This is Training Page.</h1>
   </div>
 </template>
 
 <script>
 export default {
-    name: "Training"
-}
+  name: "Training",
+};
 </script>
 
-<style>
-
-</style>
+<style></style>
