@@ -3,8 +3,8 @@
       <el-button type="text" @click="dialogTableVisible = true">Select Visible Paramter</el-button>
       <el-dialog title="Paramter Selection" :visible.sync="dialogTableVisible">
       <el-table :data="parameter_list" @selection-change="handleSelectionChange">
-        <el-table-column type="selection" label="CheckStatus" width="150"></el-table-column>
-        <el-table-column property="name" label="Parameter Name" width="200"></el-table-column>
+        <el-table-column type="selection" label="CheckStatus" ></el-table-column>
+        <el-table-column property="name" label="Parameter Name"></el-table-column>
         <el-table-column property="description" label="Parameter Description"></el-table-column>
       </el-table>
     </el-dialog>

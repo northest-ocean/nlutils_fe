@@ -5,13 +5,14 @@
       style="width: 100%;"
       fit
       stripe
-      height="800"
+      height="750"
       @sort-change="changeTableSort"
+      ref="multipleTable"
     >
       <template  v-for="(col, idx) in columns">
         <el-table-column
           :key="idx"
-          :fixed="idx === 0"
+
           :prop="col.prop"
           :label="col.label"
           header-align="center"
@@ -111,6 +112,10 @@ export default {
       // TODO set level-wised sort, name, time, id should go first
       this.columns = val.map(v => {
         return {prop: v, label: v};
+      });
+      this.$nextTick(() => {
+          this.$refs.multipleTable.doLayout();
+          // el-table加ref="multipleTable"
       });
     }
   },
