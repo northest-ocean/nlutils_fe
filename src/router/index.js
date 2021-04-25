@@ -1,7 +1,7 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
 import Data from "../views/Data.vue";
-import Index from "../views/Index.vue";
+// import Index from "../views/Index.vue";
 import Project from "../views/Project.vue";
 import Training from "../views/Training.vue";
 
@@ -11,7 +11,7 @@ const routes = [
   {
     path: "/",
     name: "Project Index Page",
-    component: Index,
+    component: Project,
   },
   {
     path: "/project",

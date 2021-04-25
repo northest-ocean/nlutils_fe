@@ -20,7 +20,6 @@ def test():
     gc.collect()
     if request.method == 'POST':
         data = request.get_data(as_text=False)
-        print(data.decode('utf-8'))
         data_dict = json.loads(data)
         fetch_path = request_args_to_folder(data_dict)
         # print(data_dict)

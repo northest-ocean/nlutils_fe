@@ -1,22 +1,18 @@
 <template>
   <div id="app">
-    <div id="nav">
-      <router-link to="/">Index</router-link> |
-      <router-link to="/project">Project</router-link> |
-      <router-link to="/training">Training</router-link> |
-      <router-link to="/data">Data</router-link>
-    </div>
+    <h1>nlutils</h1>
     <router-view />
   </div>
 </template>
 
 <style lang="less">
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
+  font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
+  margin-top: 60px;
 }
 
 #nav {

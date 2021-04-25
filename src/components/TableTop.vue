@@ -1,15 +1,17 @@
 <template>
   <div>
     <el-table
-      class="tableTop"
       :data="tableData"
-      style="width: 100%"
+      style="width: 100%;"
+      fit
+      stripe
+      height="800"
       @sort-change="changeTableSort"
-      :default-sort="{ prop: 'date', order: 'ascending' }"
     >
       <template  v-for="(col, idx) in columns">
         <el-table-column
           :key="idx"
+          :fixed="idx === 0"
           :prop="col.prop"
           :label="col.label"
           header-align="center"
@@ -26,51 +28,26 @@
 
 <script>
 // import { parserParamJSONFile } from '../plugin/parameter-json-parser';
-
+import { mapState } from 'vuex';
+/* eslint-disable */
+import store from '../store/index'
 export default {
   name: "TableTop",
   props: {
-    tableData2: {
-      type: Array,
-      default: function () {
-        return [];
-      },
-    },
+    parameters:{
+    }
   },
   data() {
     return {
-      columns: [
-        {
-          prop: "date",
-          label: "Date"
-        },
-        {
-          prop: "time",
-          label: "Time"
-        },
-        {
-          prop: "epoch",
-          label: "Epoch"
-        },
-      ],
-      tableData: [
-        {
-          "date": '2012-2-3',
-          "time": "12312412",
-          "epoch": 180
-        },
-        {
-          "date": '2012-2-1',
-          "time": "12312412",
-          "epoch": 120
-        },
-        {
-          "date": '2012-1-2',
-          "time": "12312412",
-          "epoch": 50
-        }
-      ]
+      columns: [],
+      tableData: [],
+      default_params: ['epoch', 'induc_epoch', 'user_degree_threshold', 'item_degree_threshold', 'learning_rate', 'temp', 'network']
     };
+  },
+  computed: {
+    ...mapState({
+      visible_paramters: state => state.params.visible_paramters
+    })
   },
     mounted() {
       // this.getDeviceTypes();
@@ -83,17 +60,26 @@ export default {
           let parameters = Object.keys(pobj.data[0]['parameters']);
           parameters = parameters.filter(val => {
             // console.log(val);
-            return ['epoch', 'induc_epoch', 'user_degree_threshold', 'item_degree_threshold', 'learning_rate', 'temp', 'network'].indexOf(val) !== -1;
+            console.log(_this.visible_paramters);
+            if(this.visible_paramters !== undefined)
+              return _this.visible_paramters.indexOf(val) !== -1;
+            else
+              return _this.default_params.indexOf(val) !== -1;
           });
           let results = Object.keys(pobj.data[0]['results']);
-          results = [...parameters, ...results];
+          results = ['name', 'time_consumed',...parameters, ...results];
           _this.columns = results.map(val => {
-            return {prop: val, label: val.substring(0, 11)};
+            return {prop: val, label: val};
           });
           let tmpTableData = [];
+
           for(let i=0;i<pobj.data.length;i++) {
             let tmp = pobj.data[i]['results'];
             tmp = Object.assign(tmp, pobj.data[i]['parameters']);
+            tmp['time_consumed'] = Math.abs(pobj.data[i]['time_consumed']);
+            tmp['name'] = pobj.data[i]['name'];
+            tmp['description'] = pobj.data[i]['description'];
+            // console.log(tmp);
             for(let i=0;i<Object.keys(tmp).length;i++) {
               let key = Object.keys(tmp)[i];
               if (typeof tmp[key] === "number") {
@@ -109,15 +95,24 @@ export default {
             }
             tmpTableData.push(tmp);
           }
-          // console.log(tmpTableData);
+          _this.$emit('func', Object.keys(tmpTableData[0]));
           _this.tableData = tmpTableData;
         }
       }
       request.open("POST", url, true);
       let data = {
-        name:"HybrdModel-induc-user-item"
+        name:"",
+        server:"heat"
       }
       request.send(JSON.stringify(data));
+  },
+  watch: {
+    visible_paramters(val) {
+      // TODO set level-wised sort, name, time, id should go first
+      this.columns = val.map(v => {
+        return {prop: v, label: v};
+      });
+    }
   },
 
   methods: {
@@ -149,13 +144,13 @@ export default {
       //按照降序排序
       if (sortingType == "descending") {
         this.tableData = this.tableData.sort(
-          (a, b) => b[fieldName] - a[fieldName]
+          (a, b) => typeof(b[fieldName]) !== 'string' ? b[fieldName] - a[fieldName] : a[fieldName].localeCompare(b[fieldName])
         );
       }
       //按照升序排序
       else {
         this.tableData = this.tableData.sort(
-          (a, b) => a[fieldName] - b[fieldName]
+          (a, b) => typeof(b[fieldName]) !== 'string' ? b[fieldName] - a[fieldName] : b[fieldName].localeCompare(a[fieldName])
         );
       }
       //如果字段名称为“创建时间”，将时间戳格式的“创建时间”再转换为时间格式

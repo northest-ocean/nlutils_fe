@@ -22,3 +22,5 @@ pnpm-debug.log*
 *.sln
 *.sw?
 *.pyc
+*.json
+web_server/__pycache__/*

@@ -2,10 +2,11 @@ import json
 import os
 
 def request_args_to_folder(data_dict):
+    server = data_dict['server']
     name = data_dict['name']
-    return f'./params/{name}/'
-
-
+    if name is None:
+        name = ''
+    return f'./params/{name}/' if server is None else f'./{server}/{name}/'
 
 class PWJSONParser(object):
 
