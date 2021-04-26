@@ -1,5 +1,13 @@
 import json
 import os
+import time
+
+from multiprocessing import Process
+from nlutils.Utils.Log import Logger
+
+
+global_logger = Logger.get_logger()
+
 
 def request_args_to_folder(data_dict):
     server = data_dict['server']
@@ -34,6 +42,28 @@ class PWJSONParser(object):
                 if abs_path.split('.')[-1] == 'json' and 'fail' not in abs_path:
                     json_paths.append(abs_path)
         return list(map(lambda x:self.parse_file(x),json_paths))
+
+class DeamonFetcher(object):
+
+    def __init__(self):
+        pass
+
+    @staticmethod
+    def fetch_from_servers():
+        while True:
+            global_logger.info("Fetching data from servers.")
+            os.system("bash fetch_data.sh heat")
+            time.sleep(1000)
+
+    def run(self):
+        self._process = Process(target=DeamonFetcher.fetch_from_servers)
+        self._process.start()
+    
+    def terminate(self):
+        self._process.terminate()
+
+
+
 
 if __name__ == '__main__':
     x = PWJSONParser()

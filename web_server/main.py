@@ -9,11 +9,15 @@ from flask_cors import *
 import json
 
 from utils import request_args_to_folder, PWJSONParser
+from utils import DeamonFetcher
 
 app = Flask(__name__)
 parser = PWJSONParser()
 
 CORS(app, supports_credentials=True)
+
+fetcher = DeamonFetcher()
+fetcher.run()
 
 @app.route('/params', methods=['POST'])
 def test():
