@@ -1,4 +1,7 @@
-server=$1
-scp -r xchen648@$server.cc.gatech.edu:/nethome/xchen648/mliu444_codes/HybridModel/experiments/params ./tmp
+username=$1
+server=$2
+remote_path=$3
+local_alias=$4
+scp -r $username@$server:$remote_path ./tmp
 rm -rf $server
 mv tmp $server
