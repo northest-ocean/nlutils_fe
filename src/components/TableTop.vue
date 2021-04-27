@@ -4,11 +4,12 @@
       :data="tableData"
       style="width: 100%"
       fit
-      stripe
+      border
       height="750"
       @sort-change="changeTableSort"
       @selection-change="handleSelectionChange"
       ref="multipleTable"
+      :cell-class-name="tableCellClassName"
     >
       <template v-for="(col, idx) in columns">
         <el-table-column
@@ -83,7 +84,7 @@ export default {
           else return _this.default_params.indexOf(val) !== -1;
         });
         let results = Object.keys(pobj.data[0]["results"]);
-        results = ["name", "time_consumed", ...parameters, ...results];
+        results = ["name", "time_consumed", "end_time_stamp", ...parameters, ...results];
         _this.columns = results.map((val) => {
           return { prop: val, label: val };
         });
@@ -93,8 +94,10 @@ export default {
           let tmp = pobj.data[i]["results"];
           tmp = Object.assign(tmp, pobj.data[i]["parameters"]);
           tmp["time_consumed"] = Math.abs(pobj.data[i]["time_consumed"]);
+          tmp["end_time_stamp"] = parseInt(pobj.data[i]["end_time_stamp"]);
           tmp["name"] = pobj.data[i]["name"];
           tmp["time"] = pobj.data[i]["time"];
+          tmp["start_time_stamp"] = parseInt(pobj.data[i]["start_time_stamp"]);
           tmp["description"] = pobj.data[i]["description"];
           // console.log(tmp);
           for (let i = 0; i < Object.keys(tmp).length; i++) {
@@ -138,6 +141,19 @@ export default {
   },
 
   methods: {
+    tableCellClassName(cell) {
+      let column = cell['column'];
+      let row = cell['row'];
+      let columnIndex = cell['columnIndex'];
+      let rowIndex = cell['rowIndex'];
+      if(Date.now() / 1000 - parseInt(row['end_time_stamp']) < 24 * 3600) {
+        if(columnIndex >= 2)
+          return 'newest-row-body';
+        else
+          return 'newest-row-head'
+      }
+      return '';
+    },
     handleSelectionChange(val) {
       console.log(val);
     },
@@ -169,19 +185,27 @@ export default {
             : b[fieldName].localeCompare(a[fieldName])
         );
       }
-      //如果字段名称为“创建时间”，将时间戳格式的“创建时间”再转换为时间格式
-      //   if(fieldName=="createTime"){
-      //     this.tableData.map(item => {
-      //         item.createTime = this.$moment(item.createTime).format(
-      //              "YYYY-MM-DD HH:mm:ss"
-      //         );
-      //     });
-      // }
-
-      console.log(this.tableData);
     },
   },
 };
 </script>
 
-<style lang="less" scoped></style>
+<style>
+.el-table .newest-row-body {
+  background:rgb(70, 43, 68, 0.2);
+  color: rgb(8, 8, 8);
+}
+
+.el-table .newest-row-head {
+  background:rgb(80, 103, 180);
+  color: rgb(255, 255, 255);
+}
+
+.el-table__body .el-table__row.hover-row td {
+    background: rgba(255, 181, 71, 0.7);
+    font-size: 15px;
+    font-weight: bold;
+    color: rgb(78, 72, 72);
+}
+
+</style>
