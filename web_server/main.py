@@ -20,7 +20,25 @@ fetcher = DeamonFetcher()
 fetcher.run()
 
 @app.route('/params', methods=['POST'])
-def test():
+def params():
+    gc.collect()
+    if request.method == 'POST':
+        data = request.get_data(as_text=False)
+        data_dict = json.loads(data)
+        fetch_path = request_args_to_folder(data_dict)
+        # print(data_dict)
+        response = dict()
+        response['status'] = 200
+        try:
+            response['data'] = parser.parse_folder(fetch_path)
+            gc.collect()
+        except Exception as e:
+            logging.exception('Exception occured while handling data')
+            response['status'] = 503
+        return response
+
+@app.route('/get_avaiable_server_projects', methods=['GET'])
+def server_projects():
     gc.collect()
     if request.method == 'POST':
         data = request.get_data(as_text=False)

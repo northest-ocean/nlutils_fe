@@ -1,5 +1,13 @@
 <template>
   <div>
+    <Selector
+      :title="current_server === null ? 'Server' : current_server"
+      :items="display_server_list"
+    />
+    <Selector
+      :title="current_project === null ? 'Project' : current_project"
+      :items="project_list"
+    />
     <el-button type="text" @click="dialogTableVisible = true"
       >Select Visible Paramter</el-button
     >
@@ -24,11 +32,16 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
+
 import TableTop from "../components/TableTop";
+import Selector from "../components/Selector";
+
 export default {
   name: "Project",
   components: {
     TableTop,
+    Selector,
   },
   data() {
     return {
@@ -61,6 +74,20 @@ export default {
       }
       return params_list;
     },
+    project_list() {
+      if (this.server_project_map && this.current_server)
+        return this.server_project_map[this.current_server];
+      return ["Demo1"];
+    },
+    display_server_list() {
+      return this.server_list ? this.server_list : ["Demo"];
+    },
+    ...mapState({
+      current_server: (state) => state.params.current_server,
+      server_list: (state) => state.params.server_list,
+      current_project: (state) => state.params.current_project,
+      server_project_map: (state) => state.params.server_project_map,
+    }),
   },
 };
 </script>

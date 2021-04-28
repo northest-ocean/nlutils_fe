@@ -51,8 +51,13 @@ class DeamonFetcher(object):
     @staticmethod
     def fetch_from_servers():
         while True:
-            global_logger.info("Fetching data from servers.")
-            os.system("bash fetch_data.sh heat")
+            with open('./server.conf', 'r') as f:
+                lines = f.readlines()
+                for line in lines:
+                    line = line.replace('\n', '')
+                    username, server, remote_path, local_alias = line.split(' ')
+                    global_logger.info(f"Fetching data from {server}.")
+                    os.system(f"bash fetch_data.sh {username} {server} {remote_path} {local_alias}")
             time.sleep(1000)
 
     def run(self):

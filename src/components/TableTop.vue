@@ -69,7 +69,7 @@ export default {
   },
   mounted() {
     // this.getDeviceTypes();
-    let url = "http://localhost:8000/params";
+    let url = "http://api.nlutils.org:8000/params";
     let request = new XMLHttpRequest();
     let _this = this;
     request.onreadystatechange = function () {
@@ -141,6 +141,10 @@ export default {
   },
 
   methods: {
+    filterHandler(value, row, column) {
+      const property = column['property'];
+      return row[property] === value;
+    },
     tableCellClassName(cell) {
       let column = cell['column'];
       let row = cell['row'];
