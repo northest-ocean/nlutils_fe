@@ -1,9 +1,12 @@
 import json
 import os
+import subprocess
 import time
 
 from multiprocessing import Process
 from nlutils.Utils.Log import Logger
+from nlutils.Utils.Exception import *
+from Configure import WSConfigure
 
 
 global_logger = Logger.get_logger()
@@ -51,14 +54,15 @@ class DeamonFetcher(object):
     @staticmethod
     def fetch_from_servers():
         while True:
-            with open('./server.conf', 'r') as f:
-                lines = f.readlines()
-                for line in lines:
-                    line = line.replace('\n', '')
-                    username, server, remote_path, local_alias = line.split(' ')
-                    global_logger.info(f"Fetching data from {server}.")
-                    os.system(f"bash fetch_data.sh {username} {server} {remote_path} {local_alias}")
-            time.sleep(1000)
+            gpu_servers = WSConfigure.get_instance().get_config_info('GPUServerTable').raw()
+            for server in gpu_servers:
+                username = server.get('username')
+                host = server.get('host')
+                remote_path = server.get('remotePath') if len(server.get('remotePath')) else WSConfigure.get_instance().get_config_info('defaultRemotePath').as_string()
+                local_alias = server.get('localAlias')
+                os.system(f"bash fetch_data.sh {username} {host} {remote_path} {local_alias}")
+            update_period = WSConfigure.get_instance().get_config_info('updatePeriod').as_int()
+            time.sleep(update_period)
 
     def run(self):
         self._process = Process(target=DeamonFetcher.fetch_from_servers)
@@ -67,10 +71,42 @@ class DeamonFetcher(object):
     def terminate(self):
         self._process.terminate()
 
-
+def gpu_memory_watcher():
+    gpu_servers = WSConfigure.get_instance().get_config_info('GPUServerTable').raw()
+    server_infos = dict()
+    for server in gpu_servers:
+        cmd = '''ssh username@host "nvidia-smi | grep 'MiB' | awk '{print \$9 \$11}' | grep -v '|'" > ./tmp
+        cat tmp
+        '''
+        username = server.get('username')
+        host = server.get('host')
+        cmd = cmd.replace('host', host)
+        cmd = cmd.replace('username', username)
+        device_memories = subprocess.getoutput(cmd)
+        if 'command not found' in device_memories:
+            raise CUDANotFoundException("CUDA is not found in current environment.")
+        if 'MiB' not in device_memories:
+            raise SSHConnectionError('Error occurred while trying to connect GPU server via SSH.')
+        device_memories = device_memories.split("\n")
+        os.system('rm ./tmp')
+        
+        device_infos = list()
+        for device_id, device_memory in enumerate(device_memories):
+            device_used_memory = int(device_memory.split("MiB")[0])
+            device_total_memory = int(device_memory.split("MiB")[1])
+            device_available_memory = device_total_memory - device_used_memory
+            device_available_memory_precent = device_available_memory / device_total_memory
+            device_info = {'device_id': device_id, 'device_total_memory':device_total_memory, 'device_available_memory': device_available_memory, 'device_used_memory':device_used_memory, 'device_available_memory_precent': device_available_memory_precent, 'device_info_last_update_timestamp': time.time()}
+            device_infos.append(device_info)
+        server_infos[server.replace('\n', '')] = device_infos
+    return server_infos
 
 
 if __name__ == '__main__':
-    x = PWJSONParser()
-    y = x.parse_folder("./")
-    print(list(y))
+    # x = PWJSONParser()
+    # y = x.parse_folder("./")
+    # print(list(y))
+    gpu_servers = WSConfigure.get_instance().get_config_info('GPUServerTable').raw()
+    for server in gpu_servers:
+        print(server)
+        print(server.get('username'))
