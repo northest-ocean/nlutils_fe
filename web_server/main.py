@@ -26,7 +26,6 @@ def params():
         data = request.get_data(as_text=False)
         data_dict = json.loads(data)
         fetch_path = request_args_to_folder(data_dict)
-        # print(data_dict)
         response = dict()
         response['status'] = 200
         try:
@@ -44,7 +43,6 @@ def server_projects():
         data = request.get_data(as_text=False)
         data_dict = json.loads(data)
         fetch_path = request_args_to_folder(data_dict)
-        # print(data_dict)
         response = dict()
         response['status'] = 200
         try:
