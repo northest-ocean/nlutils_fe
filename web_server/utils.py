@@ -1,5 +1,5 @@
 import json
-from nlutils_fe.web_server.Exception import WSFetchGPUServerInfoException
+from Exception import WSFetchGPUServerInfoException
 import os
 import subprocess
 import time
@@ -71,6 +71,21 @@ class DeamonFetcher(object):
     
     def terminate(self):
         self._process.terminate()
+
+class ParameterFileManager(object):
+    
+    @classmethod
+    def init(cls):
+        cls.parameters = dict()
+        parameters_folder = WSConfigure.get_instance().get_config_info('')
+
+    @classmethod
+    def get_instance(cls):
+        if not hasattr(cls, 'inited'):
+            cls.init()
+            cls.inited = True
+        return cls
+    
 
 class GPUServerManager(object):
 
