@@ -70,10 +70,12 @@ export default {
   mounted() {
     // this.getDeviceTypes();
     let url = "http://api.nlutils.org:8000/params";
+    // let url = "http://127.0.0.1:8000/params";
     let request = new XMLHttpRequest();
     let _this = this;
     request.onreadystatechange = function () {
       if (request.readyState == 4) {
+        // console.log(request.responseText.substring(40850, 40870));
         let pobj = JSON.parse(request.responseText);
         let parameters = Object.keys(pobj.data[0]["parameters"]);
         parameters = parameters.filter((val) => {
@@ -93,13 +95,17 @@ export default {
         for (let i = 0; i < pobj.data.length; i++) {
           let tmp = pobj.data[i]["results"];
           tmp = Object.assign(tmp, pobj.data[i]["parameters"]);
-          tmp["time_consumed"] = Math.abs(pobj.data[i]["time_consumed"]);
-          tmp["end_time_stamp"] = parseInt(pobj.data[i]["end_time_stamp"]);
-          tmp["name"] = pobj.data[i]["name"];
-          tmp["time"] = pobj.data[i]["time"];
-          tmp["start_time_stamp"] = parseInt(pobj.data[i]["start_time_stamp"]);
-          tmp["description"] = pobj.data[i]["description"];
-          // console.log(tmp);
+          tmp = Object.assign(tmp, pobj.data[i]);
+          tmp = Object.assign(tmp, pobj.data[i]["basic_parameters"]);
+          // compatible with 0.0.12 before
+          // tmp["time_consumed"] = Math.abs(pobj.data[i]["time_consumed"]) ? Math.abs(pobj.data[i]["time_consumed"]) : Math.abs(pobj.data[i]["basic_parameters"]["time_consumed"]);
+          // tmp["end_time_stamp"] = parseInt(pobj.data[i]["end_time_stamp"]) ? parseInt(pobj.data[i]["end_time_stamp"]) : parseInt(pobj.data[i]["basic_parameters"]["end_time_stamp"]);
+          // tmp["name"] = pobj.data[i]["name"] ? pobj.data[i]["name"] : pobj.data[i]["basic_parameters"]["name"];
+          // tmp["time"] = pobj.data[i]["time"] ? pobj.data[i]["time"] : pobj.data[i]["basic_parameters"]["time"];
+          // tmp["start_time_stamp"] = parseInt(pobj.data[i]["start_time_stamp"]) ? parseInt(pobj.data[i]["start_time_stamp"]) : parseInt(pobj.data[i]["basic_parameters"]["start_time_stamp"]);
+          // tmp["description"] = pobj.data[i]["description"] ? pobj.data[i]["description"] : pobj.data[i]["basic_parameters"]["description"];
+
+          console.log(tmp);
           for (let i = 0; i < Object.keys(tmp).length; i++) {
             let key = Object.keys(tmp)[i];
             if (typeof tmp[key] === "number") {
