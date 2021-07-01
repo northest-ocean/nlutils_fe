@@ -1,0 +1,28 @@
+{
+    "GPUServerTable": [
+        {
+            "username": "xchen648",
+            "host": "bucks.cc.gatech.edu",
+            "password": "",
+            "remotePath": "",
+            "localAlias": "bucks"
+        },
+        {
+            "username": "xchen648",
+            "host": "cavaliers.cc.gatech.edu",
+            "password": "",
+            "remotePath": "",
+            "localAlias": "cavaliers"
+        },
+        {
+            "username": "xchen648",
+            "host": "heat.cc.gatech.edu",
+            "password": "",
+            "remotePath": "",
+            "localAlias": "heat"
+        }
+
+    ],
+    "defaultRemotePath": "/tmp/nlutils",
+    "updatePeriod": 500
+}
