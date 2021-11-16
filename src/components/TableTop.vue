@@ -155,8 +155,6 @@ export default {
             tmp = Object.assign(tmp, data[i]);
             tmp = Object.assign(tmp, data[i]["basic_parameters"]);
 
-            console.error(tmp);
-
             for (let i = 0; i < Object.keys(tmp).length; i++) {
               let key = Object.keys(tmp)[i];
               if (typeof tmp[key] === "number") {
