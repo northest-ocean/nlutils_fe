@@ -57,7 +57,6 @@ export default {
         return selection["name"];
       });
       this.$store.commit("SET_VISIBLE_PARAMETERS", param_list);
-      console.log(param_list);
     },
     get_params(data) {
       this.parameters = data;
@@ -75,9 +74,12 @@ export default {
       return params_list;
     },
     project_list() {
-      if (this.server_project_map && this.current_server)
-        return this.server_project_map[this.current_server];
-      return ["Demo1"];
+      if(!this.data) return ['Null'];
+      let project_list = new Set();
+      for(let i=0;i<this.data.length;i++){
+        project_list.add(this.data[i].basic_parameters["name"])
+      }
+      return [...project_list];
     },
     display_server_list() {
       return this.server_list ? this.server_list : ["Demo"];
@@ -87,6 +89,7 @@ export default {
       server_list: (state) => state.params.server_list,
       current_project: (state) => state.params.current_project,
       server_project_map: (state) => state.params.server_project_map,
+      data: (state) => state.params.data,
     }),
   },
 };

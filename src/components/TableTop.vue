@@ -131,6 +131,7 @@ export default {
         if (request.readyState === 4 && request.status === 200) {
           let response = JSON.parse(request.responseText);
           let data = response;
+          _this.$store.commit("SET_DATA", data);
           let parameters = Object.keys(data[0]["parameters"]);
           parameters = parameters.filter((val) => {
             if (this.visible_paramters !== undefined)
