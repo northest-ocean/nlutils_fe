@@ -137,7 +137,12 @@ export default {
               return _this.visible_paramters.indexOf(val) !== -1;
             else return _this.default_params.indexOf(val) !== -1;
           });
-          let results = Object.keys(data[0]["results"]);
+          let results = new Set();
+          for(let i=0;i<data.length;i++){
+            // console.log(data[i]["results"][0]);
+            for(let j=0;j<Object.keys(data[i]["results"]).length;j++)
+              results.add(Object.keys(data[i]["results"])[j])
+          }
           results = [
             "name",
             ...results,
@@ -173,7 +178,6 @@ export default {
           }
           _this.$emit("func", Object.keys(tmpTableData[3]));
           _this.tableData = tmpTableData;
-          console.log(tmpTableData)
         }
       };
     },
